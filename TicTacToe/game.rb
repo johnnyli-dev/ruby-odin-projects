@@ -2,7 +2,7 @@ class Board
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
-
+    @turns = 0
     @board = [[1,2,3],[4,5,6],[7,8,9]]
   end
 
@@ -14,6 +14,7 @@ class Board
     else
       @board[0][where%3-1] = player.playerSymbol
     end
+    @turns += 1
   end
 
   def displayBoard()
@@ -23,6 +24,31 @@ class Board
     p "---------"
     p "#{@board[2][0]} | #{@board[2][1]} | #{@board[2][2]}"
   end
+
+  def isValid(position)
+    if position > 6 && position < 10
+      if @board[2][position%3-1] == 6 + position % 3
+        return true
+      else
+        return false
+      end
+    elsif position > 3 && position < 10
+      if @board[1][position%3-1] == 3 + position % 3
+        return true
+      else
+        return false
+      end
+    elsif position > 0 && position < 10
+      if @board[0][position%3-1] == position % 3
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
+  end
+
 
   def checkWin(player)
     total = 0
@@ -85,7 +111,50 @@ class Player
 end
 
 def playGame(p1,p2,board)
-  while !checkWin
-    
+  counter = 1
+  gameOver = false
+  board.displayBoard
+  while !gameOver
+    if counter % 2 == 0
+      puts "Player #{p1.playerSymbol} turn, make a move 1-9: "
+      spot = gets.chomp
+      while !board.isValid(spot.to_i)
+        puts "Invalid Position, Player #{p1.playerSymbol} turn, make a move 1-9: "
+        spot = gets.chomp
+      end
+      board.placePiece(p1, spot.to_i)
+      board.displayBoard
+      if board.checkWin(p1)
+        puts "Player #{p1.playerSymbol} has won!"
+        gameOver = true
+      elsif @turns == 9
+        gameOver = true
+        puts "The game is a draw"
+      end
+      counter += 1
+    else
+      puts "Player #{p2.playerSymbol} turn, make a move 1-9: "
+      spot = gets.chomp
+      while !board.isValid(spot.to_i)
+        puts "Invalid Position, Player #{p1.playerSymbol} turn, make a move 1-9: "
+        spot = gets.chomp
+      end
+      board.placePiece(p2, spot.to_i)
+      board.displayBoard
+      if board.checkWin(p2)
+        puts "Player #{p2.playerSymbol} has won!"
+        gameOver = true
+      elsif @turns == 9
+        gameOver = true
+        puts "The game is a draw"
+      end
+      counter += 1
+    end
   end
 end
+
+player1 = Player.new("X")
+player2 = Player.new("O")
+game = Board.new(player1,player2)
+
+playGame(player1,player2,game)
