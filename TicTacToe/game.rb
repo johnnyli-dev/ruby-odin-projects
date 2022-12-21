@@ -27,25 +27,25 @@ class Board
 
   def isValid(position)
     if position > 6 && position < 10
-      if @board[2][position%3-1] == 6 + position % 3
-        return true
+      if @board[2][position%3-1] == @player1.playerSymbol || @board[2][position%3-1] == @player2.playerSymbol
+        false
       else
-        return false
+        true
       end
     elsif position > 3 && position < 10
-      if @board[1][position%3-1] == 3 + position % 3
-        return true
+      if @board[1][position%3-1]== @player1.playerSymbol || @board[2][position%3-1] == @player2.playerSymbol
+        false
       else
-        return false
+        true
       end
     elsif position > 0 && position < 10
-      if @board[0][position%3-1] == position % 3
-        return true
+      if @board[0][position%3-1] == @player1.playerSymbol || @board[2][position%3-1] == @player2.playerSymbol
+        false
       else
-        return false
+        true
       end
     else
-      return false
+      false
     end
   end
 
